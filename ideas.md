@@ -7,8 +7,80 @@ Planes are helpful, because you can store the localization height relative to th
 
 When given a plane, convert the point cloud into coordinates that are centered on the user and oriented relative to the floor. Look for groups of points that have been seen above the ground plane. These are also likely obstacles. Persist points that are out of view until there has been a scan through them to indicate that they are clear. Do 1ft, .25m voxels of the world to ease ray tracing and that kind of thing. Accumulate points in a region to estimate the occupation. 
 
+### What does the example app do?
+
+#### onCreate
+- Setup config, verify the device is ready, create a session
+- Setup gesture listener (use for vibrations management?, providing feedback when not with Talkback)
+- Setup rendering
+
+#### onSingleTap
+- Store the single tap away for use when updating during drawing
+
+#### onSurfaceCreated
+- Implement the visualization of all the different rendered objects (planes, Andy, point clouds)
+- This is setting up what every single surface/polygon should look like
+
+#### onSurfaceChanged
+- update the viewport and things I guess
+
+#### onDrawFrame
+- clear pixels from the last frame
+- handle taps on the frame
+- This uses API Frames, the view of everything and its valid relationship at the current point?
+- Draw the background
+- Check the frame tracking state. If it's not tracking, don't draw objects. Maybe render text to indicate its not tracking, and jump the TalkBack to that text?
+- Get the projection matrix for rendering
+- Get the camera matrix and draw. Not gonna lie, I don't know how these two relate, but I don't think it matters that much right now.
+- Could I insert a model and draw the old key frames from anchors every so often to see the estimated position?
+- Visualize tracked points (API Point Cloud(s))
+- Display a "loading" message until at least one plane has been tracked. Use this as an example for displaying other messages to relay intermediate information.
+- Visualize Planes using the triangular image
+- Visualize touch-based anchors (where the Android sits right now)
+- Are anchors relative to planes?
+- Update the anchors relative to planes and redraw the Android model onto the screen (for each model in the for loop that is tracking)
+- I can probably skip the shadows
+- End by catching generic OpenGL exceptions to avoid throwing up. Display an extra little thing if there's an error?
+
+### API Classes
+
+#### Anchor
+Describe a fixed location in the real world. Where is origin?
+Anchors can either be tracked (accurately located), not currently tracked (poorly located), or stopped (discarded and never relocated)
+
+Use anchors to save point clouds in a consistent way. This means that I'll have anchors with child features. If the anchor goes bad, discard all the child features.
+
+#### Frame
+"Provides a snapshot of AR state at a given timestamp"
+
+#### Hit Result
+Defines an intersection between a ray and estimated real world geometry. Ray trace to predict if the user will run into things?
+
+#### Plane
+Best knowledge of a real world planar surface.
+Planes can be tracked in the same way as anchors (current, not current, stopped).
+Planes can be horizontal-downward facing, horizontal-upward facing, or non-horizontal. Used for filtering based on binned normal vector.
+
+Planes have bounding X, Z. Y axis is out of the plane. They also have more detailed polygons. These are measured relative to the plane's center.
+
+#### Plane hit result
+intersection between a ray and a plane
+
+#### Point Cloud
+A set of observed 3D points and confidence values
+
+#### Point Cloud Hit Result
+An intersection between a ray and a nearby point? This could be how I do ray tracing to clear open areas and detect obstacles.
+
+#### Pose
+An immutable rigid transformation from one coordinate frame to another.
+Poses always describe the transformation from object's local coordinate frame to the world coods. Everything between frames should be measured from an Anchor. Numerical values are only valid for the given frame.
+
+#### Session, Config
+Manage and specify AR system things
+
 ## Behind the Scenes
-Android Best Practices		
+Android Best Practices, later
 
 ## Interface Design Thesis and Summary
 
