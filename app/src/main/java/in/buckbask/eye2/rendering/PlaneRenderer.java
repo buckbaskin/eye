@@ -283,8 +283,10 @@ public class PlaneRenderer {
         float cameraY = cameraPose.ty();
         float cameraZ = cameraPose.tz();
         for (Plane plane : allPlanes) {
-            if (plane.getType() != com.google.ar.core.Plane.Type.HORIZONTAL_UPWARD_FACING ||
-                    plane.getTrackingState() != Plane.TrackingState.TRACKING) {
+            if (plane.getType() == Plane.Type.HORIZONTAL_DOWNWARD_FACING ||
+                    plane.getTrackingState() == Plane.TrackingState.STOPPED_TRACKING) {
+                // switch to keeping everything that is facing up or non-horizontal
+                // switch to keeping planes that are current or non-current (potentially future tracked)
                 continue;
             }
 
@@ -360,7 +362,13 @@ public class PlaneRenderer {
 
             // Set plane color. Computed deterministically from the Plane index.
             int colorIndex = planeIndex % PLANE_COLORS_RGBA.length;
-            colorRgbaToFloat(mPlaneColor, PLANE_COLORS_RGBA[colorIndex]);
+            if (plane.getType() == Plane.Type.HORIZONTAL_UPWARD_FACING && plane.getTrackingState() == Plane.TrackingState.TRACKING) {
+                colorRgbaToFloat(mPlaneColor, PLANE_COLORS_RGBA[colorIndex]); // everything is fine and dandy
+            } else if (plane.getTrackingState() == Plane.TrackingState.NOT_CURRENTLY_TRACKING) {
+                colorRgbaToFloat(mPlaneColor, NONCURRENT_PLANE_COLORS_RGBA[0]); // not currently tracking plane
+            } else {
+                colorRgbaToFloat(mPlaneColor, NONHORIZONTAL_PLANE_COLORS_RGBA[0]); // tracked but not horizontal
+            }
             GLES20.glUniform4fv(mLineColorUniform, 1, mPlaneColor, 0);
             GLES20.glUniform4fv(mDotColorUniform, 1, mPlaneColor, 0);
 
@@ -411,5 +419,13 @@ public class PlaneRenderer {
         0xFFEB3BFF,
         0xFFC107FF,
         0xFF9800FF,
+    };
+
+    private static final int[] NONHORIZONTAL_PLANE_COLORS_RGBA = {
+        0xFF0000FF, // Red
+    };
+
+    private static final int[] NONCURRENT_PLANE_COLORS_RGBA = {
+        0xFFFF00FF, // Yellow
     };
 }
