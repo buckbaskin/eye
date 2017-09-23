@@ -96,6 +96,7 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
+
         // Trigger the initial hide() shortly after the activity has been
         // created, to briefly hint to the user that UI controls
         // are available.
@@ -204,6 +205,9 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demoar);
+
+        Log.d("DemoArActivity:onCreate", "setContentView!");
+
         mSurfaceView = (GLSurfaceView) findViewById(R.id.surfaceview);
 
         mSession = new Session(/*context=*/this);
