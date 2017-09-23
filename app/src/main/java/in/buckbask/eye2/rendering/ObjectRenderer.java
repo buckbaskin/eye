@@ -29,10 +29,10 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
-import de.javagl.Obj;
-import de.javagl.ObjData;
-import de.javagl.ObjReader;
-import de.javagl.ObjUtils;
+import de.javagl.obj.Obj;
+import de.javagl.obj.ObjData;
+import de.javagl.obj.ObjReader;
+import de.javagl.obj.ObjUtils;
 
 /**
  * Renders an object loaded from an OBJ file in OpenGL.
