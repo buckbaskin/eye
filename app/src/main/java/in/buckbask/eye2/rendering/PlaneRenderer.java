@@ -403,22 +403,22 @@ public class PlaneRenderer {
     }
 
     private static final int[] PLANE_COLORS_RGBA = {
-        0xFFFFFFFF,
-        0xF44336FF,
-        0xE91E63FF,
-        0x9C27B0FF,
-        0x673AB7FF,
-        0x3F51B5FF,
-        0x2196F3FF,
-        0x03A9F4FF,
+        0x00FF00FF, // green for the first plane, you're good to go!
+        0x004336FF,
+        0x001E63FF,
+        0x0027B0FF,
+        0x003AB7FF,
+        0x0051B5FF,
+        0x0096F3FF,
+        0x00A9F4FF,
         0x00BCD4FF,
         0x009688FF,
-        0x4CAF50FF,
-        0x8BC34AFF,
-        0xCDDC39FF,
-        0xFFEB3BFF,
-        0xFFC107FF,
-        0xFF9800FF,
+        0x00AF50FF,
+        0x00C34AFF,
+        0x00DC39FF,
+        0x00EB3BFF,
+        0x00C107FF,
+        0x009800FF,
     };
 
     private static final int[] NONHORIZONTAL_PLANE_COLORS_RGBA = {
