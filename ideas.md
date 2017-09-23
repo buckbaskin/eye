@@ -1,7 +1,7 @@
 # Ideas, the Monologue. Part 1
 ## TODO
 
-- [ ] See TODOs below. Finish those
+- [x] See TODOs below. Finish those
 - [ ] Continue collecting points and things. Render non-horizontal upward planes in a different color. Make point cloud points a distinctive color.
 - [ ] Make a 3 piece (front, left, right) TalkBack custom interface
 - [ ] Make a first pass at persisting points over time using anchor trees. Every step discard untracked points, and consider future down points to be the minimum status.
@@ -22,7 +22,7 @@ Planes are helpful, because you can store the localization height relative to th
 When given a plane, convert the point cloud into coordinates that are centered on the user and oriented relative to the floor. Look for groups of points that have been seen above the ground plane. These are also likely obstacles. Persist points that are out of view until there has been a scan through them to indicate that they are clear. Do 1ft, .25m voxels of the world to ease ray tracing and that kind of thing. Accumulate points in a region to estimate the occupation. 
 
 ### What does the example app do?
-TODO Review models, images and textures
+- [x] TODO Review models, images and textures
 
 #### onCreate
 - Setup config, verify the device is ready, create a session
@@ -110,7 +110,7 @@ There are two main ways of exploring content in the app using TalkBack. First is
 A stretch goal is to identify humans and provide a heartbeat feedback when a person is near the user.
 
 ### Accesible Apps for Blind and Visually Impaired Users
-TODO Review how to make a custom screen reader interface for OpenGL elements
+- [x] TODO Review how to make a custom screen reader interface for OpenGL elements
 https://www.youtube.com/watch?v=1by5J7c5Vz4
 
 Talk Back Screen Reader
