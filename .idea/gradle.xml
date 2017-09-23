@@ -9,6 +9,8 @@
           <set>
             <option value="/var/host/media/removable/Samsung USB/Github/AndroidStudioProjects/Eye2" />
             <option value="/var/host/media/removable/Samsung USB/Github/AndroidStudioProjects/Eye2/app" />
+            <option value="/var/host/media/removable/Samsung USB/Github/AndroidStudioProjects/Eye2/arcore_client" />
+            <option value="/var/host/media/removable/Samsung USB/Github/AndroidStudioProjects/Eye2/com.google.ar" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
