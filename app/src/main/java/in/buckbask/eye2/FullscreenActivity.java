@@ -16,21 +16,32 @@ import com.google.ar.core.Plane;
 import com.google.ar.core.PlaneHitResult;
 import com.google.ar.core.Session;
 
-/*
-import com.google.ar.core.examples.java.helloar.rendering.BackgroundRenderer;
-import com.google.ar.core.examples.java.helloar.rendering.ObjectRenderer;
-import com.google.ar.core.examples.java.helloar.rendering.ObjectRenderer.BlendMode;
-import com.google.ar.core.examples.java.helloar.rendering.PlaneAttachment;
-import com.google.ar.core.examples.java.helloar.rendering.PlaneRenderer;
-import com.google.ar.core.examples.java.helloar.rendering.PointCloudRenderer;
-*/
+import in.buckbask.eye2.rendering.BackgroundRenderer;
+import in.buckbask.eye2.rendering.ObjectRenderer;
+import in.buckbask.eye2.rendering.ObjectRenderer.BlendMode;
+import in.buckbask.eye2.rendering.PlaneAttachment;
+import in.buckbask.eye2.rendering.PlaneRenderer;
+import in.buckbask.eye2.rendering.PointCloudRenderer;
 
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.concurrent.ArrayBlockingQueue;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
