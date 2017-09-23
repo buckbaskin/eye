@@ -22,8 +22,7 @@ attribute vec4 a_Position;
 varying vec4 v_Color;
 
 void main() {
-   u_Color.rgba = vec4(1.0, 0.0, 0.0, 1.0);
-   v_Color = u_Color;
+   v_Color.rgba = vec4(1.0, 0.0, 0.0, 1.0);
    gl_Position = u_ModelViewProjection * vec4(a_Position.xyz, 1.0);
    gl_PointSize = u_PointSize;
 }
