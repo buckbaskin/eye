@@ -364,16 +364,17 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Float min_dist = Float.MAX_VALUE;
+        Float dist = (float) (0.0);
         for (int i = 1; i < 4; i++) {
             for (int j = 1; j < 4; j++) {
                 List<HitResult> results = frame.hitTest((float) (size.x * i * 0.25), (float) (size.y * j * 0.25));
                 for (HitResult hr : results) {
-                    min_dist = Float.min(hr.getHitPose().tz(), min_dist);
+                    dist = dist / 2 + hr.getDistance() / 2;
+                    break;
                 }
             }
         }
-        Log.d("DemoArActivity:processR", "min dist to obstacle " + min_dist.toString());
+        Log.d("DemoArActivity:processR", "dist to obstacle " + dist.toString());
     }
 
 }

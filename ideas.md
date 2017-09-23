@@ -4,7 +4,7 @@
 - [x] TODO See TODOs below. Finish those
 - [x] TODO Continue collecting points and things. Render non-horizontal upward planes in a different color. Make point cloud points a distinctive color.
 - [x] TODO Make a 3 piece (front, left, right) TalkBack custom interface
-- [x] TODO Ray trace straight forward, use the polygon edges for other cones
+- [ ] TODO Ray trace straight forward, use the polygon edges for other cones
 - [ ] TODO Make a first pass at persisting points over time using anchor trees. Every step discard untracked points, and consider future down points to be the minimum status.
 - [ ] TODO Connect the ray tracing with the TalkBack interface. This is the first ok demo point.
 - [ ] TODO Improve/fix the point preservation tree. This will eventually allow 360 ray tracing, even for points not currently in the user view.
