@@ -1,6 +1,11 @@
 # Ideas, the Monologue. Part 1
 
 ## Functionality
+Look up what the app is supposed to provide as feedback. Planes? Point clouds with estimated distances and confidence levels?
+
+Planes are helpful, because you can store the localization height relative to the lowest ground-parallel plane seen so far. This is the reference when looking for obstacles (higher planes or holes in the plane).
+
+When given a plane, convert the point cloud into coordinates that are centered on the user and oriented relative to the floor. Look for groups of points that have been seen above the ground plane. These are also likely obstacles. Persist points that are out of view until there has been a scan through them to indicate that they are clear. Do 1ft, .25m voxels of the world to ease ray tracing and that kind of thing. Accumulate points in a region to estimate the occupation. 
 
 ## Behind the Scenes
 Android Best Practices		
