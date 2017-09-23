@@ -4,7 +4,7 @@ import com.google.ar.core.Frame;
 import com.google.ar.core.Plane;
 import com.google.ar.core.Pose;
 import com.google.ar.core.Session;
-import com.google.ar.core.examples.java.helloar.R;
+import in.buckbask.eye2.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;
