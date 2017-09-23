@@ -1,10 +1,9 @@
 package in.buckbask.eye2;
 
-import android.annotation.SuppressLint;
-import android.support.v7.app.ActionBar;
+import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -29,11 +28,13 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.WindowManager;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -184,9 +185,9 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
             // Standard Android full-screen functionality.
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            // | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            // | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                             | View.SYSTEM_UI_FLAG_FULLSCREEN
                             | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -280,6 +281,8 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
                 return;
             }
 
+            processRayTracing(frame);
+
             // Get projection matrix.
             float[] projmtx = new float[16];
             mSession.getProjectionMatrix(projmtx, 0, 0.1f, 100.0f);
@@ -354,6 +357,23 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
                 mLoadingMessageSnackbar = null;
             }
         });
+    }
+
+    private void processRayTracing(Frame frame) {
+        // Ray Trace on display center, in a 3x3 grid
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        Float min_dist = Float.MAX_VALUE;
+        for (int i = 1; i < 4; i++) {
+            for (int j = 1; j < 4; j++) {
+                List<HitResult> results = frame.hitTest((float) (size.x * i * 0.25), (float) (size.y * j * 0.25));
+                for (HitResult hr : results) {
+                    min_dist = Float.min(hr.getHitPose().tz(), min_dist);
+                }
+            }
+        }
+        Log.d("DemoArActivity:processR", "min dist to obstacle " + min_dist.toString());
     }
 
 }

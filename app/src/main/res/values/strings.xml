@@ -3,4 +3,10 @@
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="default_top_response">The space far in front of you hasn\'t been processed yet.</string>
+    <string name="default_bottom_response">The space behind you hasn\'t been processed yet.</string>
+    <string name="default_left_response">The space to your left hasn\'t been processed yet.</string>
+    <string name="default_right_response">The space to your right hasn\'t been processed yet.</string>
+    <string name="default_center_response">The space in front of you hasn\'t been processed yet.</string>
 </resources>

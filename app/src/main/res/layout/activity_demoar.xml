@@ -10,4 +10,53 @@
         android:layout_height="fill_parent"
         android:layout_gravity="top" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="6">
+        <View
+            android:id="@+id/TopRayTraceView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle"
+            android:contentDescription="@string/default_top_response"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="4"
+            android:weightSum="4">
+            <View
+                android:id="@+id/LeftRayTraceView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle"
+                android:contentDescription="@string/default_left_response"/>
+            <View
+                android:id="@+id/CenterRayTraceView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:background="@drawable/rectangle"
+                android:contentDescription="@string/default_center_response"/>
+            <View
+                android:id="@+id/RightRayTraceView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle"
+                android:contentDescription="@string/default_right_response"/>
+        </LinearLayout>
+        <View
+            android:id="@+id/BottomRayTraceView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle"
+            android:contentDescription="@string/default_bottom_response"/>
+    </LinearLayout>
+
 </RelativeLayout>
