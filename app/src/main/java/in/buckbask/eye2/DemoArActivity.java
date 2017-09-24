@@ -1,6 +1,10 @@
 package in.buckbask.eye2;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Camera;
+import android.graphics.Color;
+import android.os.Handler;
 import android.os.Vibrator;
 
 import android.graphics.Point;
@@ -36,6 +40,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,6 +48,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
+
+import static android.R.attr.data;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -79,6 +86,9 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
     private float lastX;
     private float lastY;
     private ByteBuffer bb;
+    private CentralPatternGenerator cpg;
+    private Handler handler;
+    private boolean activeVibration = false;
 
 
     // New code based on google example
@@ -110,6 +120,9 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        bb = ByteBuffer.allocateDirect(4);
+        cpg = new CentralPatternGenerator();
+        bb.order(ByteOrder.LITTLE_ENDIAN);
         setContentView(R.layout.activity_demoar);
 
         Log.d("DemoArActivity:onCreate", "setContentView!");
@@ -165,6 +178,8 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
         mSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0); // Alpha used for plane blending.
         mSurfaceView.setRenderer(this);
         mSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+
+        handler = new Handler();
     }
 
     @Override
@@ -302,6 +317,7 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
 
             GLES20.glReadPixels((int) lastX, (int) lastY, 1, 1,
                     GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, bb);
+            // Log.d("read pixel", ""+lastX+" "+lastY+" ");
 
             // If not tracking, don't draw 3d objects.
             if (frame.getTrackingState() == TrackingState.NOT_TRACKING) {
@@ -433,12 +449,51 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
         updateText(R.id.CenterRayTraceView, center_dist);
     }
 
+    public void endVibrator() {
+        this.activeVibration = false;
+        this.v.cancel();
+    }
+
+    private CentralPatternGenerator.COLOR colorMode(ByteBuffer bb) {
+        float r = 127 - bb.get(0);
+        float g = 127 - bb.get(1);
+        float b = 127 - bb.get(2);
+        // Log.d("rgb", ""+r+" "+g+" "+b);
+        float[] hsv = new float[3];
+
+        Color.RGBToHSV((int) (r), (int) (g), (int) (b), hsv);
+
+        Log.d("hsv", ""+hsv[0]+" "+hsv[1]+" "+hsv[2]);
+
+        if(hsv[2] > 0.8 && hsv[1] < .2) {
+            return CentralPatternGenerator.COLOR.WHITE;
+        } else if (hsv[2] < .2 && hsv[1] < .2) {
+            return CentralPatternGenerator.COLOR.BLACK;
+        } else if (hsv[0] > 60 && hsv[0] < 180) {
+            return CentralPatternGenerator.COLOR.GREEN;
+        } else if (hsv[0] >= 180 && hsv[0] < 300) {
+            return CentralPatternGenerator.COLOR.BLUE;
+        }
+        return CentralPatternGenerator.COLOR.RED;
+    }
+
     private void hiResRayTracing(Frame frame) {
         List<HitResult> results = frame.hitTest(lastX, lastY);
         if (results.size() > 0) {
             distance = (distance + results.get(0).getDistance()) / 2;
             updateText(R.id.CenterRayTraceView, distance);
+            if (!activeVibration) {
+                v.vibrate(cpg.pattern(colorMode(bb), 1.0f / distance), 0);
+                activeVibration = true;
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        endVibrator();
+                    }
+                }, 600);
+            }
         } else {
+            // ease back because nothing was found. Do no vibration
             if (distance < .01f) {
                 distance = .01f;
             }
