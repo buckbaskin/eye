@@ -1,5 +1,8 @@
 package in.buckbask.eye2;
 
+import android.content.Context;
+import android.os.Vibrator;
+
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +35,7 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -70,6 +74,13 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
     private View mControlsView;
     private boolean mVisible;
 
+    private Vibrator v;
+    private float distance; // determines vibration rate
+    private float lastX;
+    private float lastY;
+    private ByteBuffer bb;
+
+
     // New code based on google example
 
     // Rendering. The Renderers are created here, and initialized when the GL surface is created.
@@ -92,6 +103,7 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
     // Tap handling and UI.
     private ArrayBlockingQueue<MotionEvent> mQueuedSingleTaps = new ArrayBlockingQueue<>(16);
     private ArrayList<PlaneAttachment> mTouches = new ArrayList<>();
+    private MotionEvent last_move = null;
 
     // New code based on the Google example
 
@@ -114,11 +126,23 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
             return;
         }
 
+        // vibration output
+        v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
         // Set up tap listener.
         mGestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 onSingleTap(e);
+                return true;
+            }
+
+            @Override
+            public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                // update finger location to try and ray trace + pick colors
+                lastX = e2.getRawX();
+                lastY = e2.getRawY();
+
                 return true;
             }
 
@@ -276,13 +300,17 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
             // Draw background.
             mBackgroundRenderer.draw(frame);
 
+            GLES20.glReadPixels((int) lastX, (int) lastY, 1, 1,
+                    GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, bb);
+
             // If not tracking, don't draw 3d objects.
             if (frame.getTrackingState() == TrackingState.NOT_TRACKING) {
                 showLoadingMessage("I'm lost.");
                 return;
             }
 
-            processRayTracing(frame);
+            // processRayTracing(frame);
+            hiResRayTracing(frame);
 
             // Get projection matrix.
             float[] projmtx = new float[16];
@@ -330,6 +358,9 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
                 mVirtualObject.draw(viewmtx, projmtx, lightIntensity);
                 mVirtualObjectShadow.draw(viewmtx, projmtx, lightIntensity);
             }
+
+            // capture color
+
 
         } catch (Throwable t) {
             // Avoid crashing the application due to unhandled exceptions.
@@ -400,6 +431,19 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
         updateText(R.id.TopRayTraceView, top_dist);
         updateText(R.id.BottomRayTraceView, bottom_dist);
         updateText(R.id.CenterRayTraceView, center_dist);
+    }
+
+    private void hiResRayTracing(Frame frame) {
+        List<HitResult> results = frame.hitTest(lastX, lastY);
+        if (results.size() > 0) {
+            distance = (distance + results.get(0).getDistance()) / 2;
+            updateText(R.id.CenterRayTraceView, distance);
+        } else {
+            if (distance < .01f) {
+                distance = .01f;
+            }
+            distance *= 2;
+        }
     }
 
     int spaceJokesIndex = 0;

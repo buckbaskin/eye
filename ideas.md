@@ -4,15 +4,25 @@
 - [x] TODO See TODOs below. Finish those
 - [x] TODO Continue collecting points and things. Render non-horizontal upward planes in a different color. Make point cloud points a distinctive color.
 - [x] TODO Make a 3 piece (front, left, right) TalkBack custom interface
-- [ ] TODO Ray trace straight forward, use the polygon edges for other cones
+- [x] TODO Ray trace straight forward, use the polygon edges for other cones
+- [x] TODO Connect the ray tracing with the TalkBack interface. This is the first ok demo point.
+- [x] TODO Improve the talkback interface to 5 regions.
+- [x] TODO Look up an efficient way to ray trace (or something else) to see if a human could pass by accumulated point clouds. Estimate potential user paths and guess and check? Stochastically, if this is updating all the time, it should see something close enough.
+- [x] TODO Improve visual feedback to sighted users for demo beyond what was used for debugging purposes.
+
+- [ ] Implement a vibration, any vibration
+- [ ] Implement a central pattern generator with speed control and 4 bit select
+- [ ] Create a color -> vibration matching
+- [ ] Create a distance -> vibration speed matching (fairly urgent at 1 meter)
+- [ ] Select colors from the region under your finger in a OpenGL window
+- [ ] Match colors to primary colors and vibration map
+
+## Deprecated
+
 - [ ] TODO Make a first pass at persisting points over time using anchor trees. Every step discard untracked points, and consider future down points to be the minimum status.
-- [ ] TODO Connect the ray tracing with the TalkBack interface. This is the first ok demo point.
 - [ ] TODO Improve/fix the point preservation tree. This will eventually allow 360 ray tracing, even for points not currently in the user view.
 - [ ] TODO Simple ray tracing for checking each of the 5 positions.
-- [ ] TODO Improve the talkback interface to 5 regions.
-- [ ] TODO Look up an efficient way to ray trace (or something else) to see if a human could pass by accumulated point clouds. Estimate potential user paths and guess and check? Stochastically, if this is updating all the time, it should see something close enough.
 - [ ] TODO Implement the stochastic ray tracing to form a protective circle-cone around the user.
-- [ ] TODO Improve visual feedback to sighted users for demo beyond what was used for debugging purposes.
 
 ## Functionality
 Look up what the app is supposed to provide as feedback. Planes? Point clouds with estimated distances and confidence levels?
