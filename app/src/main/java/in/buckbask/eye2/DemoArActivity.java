@@ -49,7 +49,7 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
 
     /**
      * Whether or not the system UI should be auto-hidden after
-     * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
+     * {link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
      */
     private static final boolean AUTO_HIDE = true;
 
@@ -150,7 +150,7 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
         // ARCore requires camera permissions to operate. If we did not yet obtain runtime
         // permission on Android M and above, now is a good time to ask the user for it.
         if (CameraPermissionHelper.hasCameraPermission(this)) {
-            showLoadingMessage();
+            showLoadingMessage("Searching for surfaces...");
             // Note that order matters - see the note in onPause(), the reverse applies here.
             mSession.resume(mDefaultConfig);
             mSurfaceView.onResume();
@@ -278,6 +278,7 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
 
             // If not tracking, don't draw 3d objects.
             if (frame.getTrackingState() == TrackingState.NOT_TRACKING) {
+                showLoadingMessage("I'm lost.");
                 return;
             }
 
@@ -336,13 +337,13 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
         }
     }
 
-    private void showLoadingMessage() {
+    private void showLoadingMessage(String content) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 mLoadingMessageSnackbar = Snackbar.make(
                         DemoArActivity.this.findViewById(android.R.id.content),
-                        "Searching for surfaces...", Snackbar.LENGTH_INDEFINITE);
+                        content, Snackbar.LENGTH_INDEFINITE);
                 mLoadingMessageSnackbar.getView().setBackgroundColor(0xbf323232);
                 mLoadingMessageSnackbar.show();
             }
@@ -364,17 +365,61 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        Float dist = (float) (0.0);
+        Float center_dist = (float) (0.0);
         for (int i = 1; i < 4; i++) {
             for (int j = 1; j < 4; j++) {
                 List<HitResult> results = frame.hitTest((float) (size.x * i * 0.25), (float) (size.y * j * 0.25));
                 for (HitResult hr : results) {
-                    dist = dist / 2 + hr.getDistance() / 2;
+                    center_dist = center_dist / 2 + hr.getDistance() / 2;
                     break;
                 }
             }
         }
-        Log.d("DemoArActivity:processR", "dist to obstacle " + dist.toString());
+
+        Float left_dist = 6.0f;
+        for (HitResult hr : frame.hitTest((float) (size.x * .125), (float) (size.y * .5))) {
+            left_dist = hr.getDistance();
+        }
+        Float right_dist = 6.0f;
+        for (HitResult hr : frame.hitTest((float) (size.x * (1 - .125)), (float) (size.y * .5))) {
+            right_dist = hr.getDistance();
+        }
+        Float top_dist = 6.0f;
+        for (HitResult hr : frame.hitTest((float) (size.x * 0.5), (float) (size.y * 1.0/12))) {
+            top_dist = hr.getDistance();
+        }
+        Float bottom_dist = 6.0f;
+        for (HitResult hr : frame.hitTest((float) (size.x * 0.5), (float) (size.y * (1 - 1.0/12)))) {
+            bottom_dist = hr.getDistance();
+        }
+
+        Log.d("DemoArActivity:processR", "dist to obstacle " + center_dist.toString());
+
+        updateText(R.id.LeftRayTraceView, left_dist);
+        updateText(R.id.RightRayTraceView, right_dist);
+        updateText(R.id.TopRayTraceView, top_dist);
+        updateText(R.id.BottomRayTraceView, bottom_dist);
+        updateText(R.id.CenterRayTraceView, center_dist);
     }
 
+    int spaceJokesIndex = 0;
+
+    private void updateText(int viewId, Float dist) {
+        // TODO add insightful quotes here
+        if (dist > 5) {
+            findViewById(viewId).setContentDescription(SPACE_JOKES[spaceJokesIndex++]);
+            spaceJokesIndex = spaceJokesIndex % SPACE_JOKES.length;
+        } else if (dist < .01) {
+            findViewById(viewId).setContentDescription("I really don't know about this one.");
+        }
+        else {
+            findViewById(viewId).setContentDescription("Avoid the obstacle here in about "+ ((int) dist.floatValue()) + "meters");
+        }
+    }
+
+    private static final String[] SPACE_JOKES = {
+      "There's room in your life for more cowbell here. And walking.",
+            "I would walk 500 miles and I would walk 500 more...",
+            "These boots are made for walking, and that's just what they'll do",
+    };
 }
