@@ -406,9 +406,12 @@ public class DemoArActivity extends AppCompatActivity implements GLSurfaceView.R
 
     private void updateText(int viewId, Float dist) {
         // TODO add insightful quotes here
+        dist -= 1;
         if (dist > 5) {
             findViewById(viewId).setContentDescription(SPACE_JOKES[spaceJokesIndex++]);
             spaceJokesIndex = spaceJokesIndex % SPACE_JOKES.length;
+        } else if (dist < 1.0) {
+            findViewById(viewId).setContentDescription("You're pretty close to an obstacle here");
         } else if (dist < .01) {
             findViewById(viewId).setContentDescription("I really don't know about this one.");
         }
